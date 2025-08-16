@@ -16,6 +16,8 @@ A RESTful API for managing library books, users, and fines with comprehensive Sw
 - `GET /api/books` - Get all books
 - `POST /api/books` - Add a new book
 - `GET /api/books/:bookId` - Get book details by ID
+- `POST /api/borrow` - Borrow a book
+- `POST /api/return` - Return a borrowed book
 - `GET /api/fines/:userId` - Get total fines for a user
 
 ## Prerequisites
