@@ -8,8 +8,9 @@ A RESTful API for managing library books, users, and fines with comprehensive Sw
 - 👥 User fine tracking
 - 📖 Detailed book information with author, publisher, and category details
 - 📋 Interactive API documentation with Swagger UI
-- 🗄️ MySQL database integration
+- 🗄️ SQLite in-memory database (no external database setup required)
 - 🔒 CORS enabled for cross-origin requests
+- 🚀 Auto-initialized with sample data on startup
 
 ## API Endpoints
 
@@ -23,7 +24,6 @@ A RESTful API for managing library books, users, and fines with comprehensive Sw
 Before running this application, make sure you have the following installed:
 
 - [Node.js](https://nodejs.org/) (version 14 or higher)
-- [MySQL](https://www.mysql.com/) (version 5.7 or higher)
 - [Git](https://git-scm.com/)
 
 ## Installation & Setup
@@ -41,34 +41,7 @@ cd library-management-backend
 npm install
 ```
 
-### 3. Environment Configuration
-
-Create a `.env` file in the root directory:
-
-```bash
-# Create .env file
-touch .env
-```
-
-Add the following environment variables to your `.env` file:
-
-```env
-PORT=3000
-DB_HOST=localhost
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_NAME=library_db
-```
-
-### 4. Database Setup
-
-Make sure your MySQL server is running and create the database:
-
-```sql
-CREATE DATABASE library_db;
-```
-
-### 5. Start the Application
+### 3. Start the Application
 
 ```bash
 npm start
@@ -76,11 +49,30 @@ npm start
 
 The server will start on `http://localhost:3000`
 
+**Note**: The application uses an in-memory SQLite database that is automatically initialized with sample data when the server starts. No external database setup is required!
+
 ## API Documentation
 
 Once the server is running, you can access the interactive API documentation:
 
 - **Swagger UI**: http://localhost:3000/api-docs
+
+## Sample Data
+
+The application comes pre-loaded with sample data including:
+
+### Books
+- The Great Gatsby (F. Scott Fitzgerald)
+- To Kill a Mockingbird (Harper Lee)
+- 1984 (George Orwell)
+- Harry Potter and the Sorcerer's Stone (J.K. Rowling)
+- The Hobbit (J.R.R. Tolkien)
+
+### Users
+- John Doe, Jane Smith, Bob Johnson, Alice Brown
+
+### Sample Fines
+- Various fine amounts for different users
 
 ## Git Commands
 
@@ -181,13 +173,12 @@ npm audit fix
 ```
 library-management-backend/
 ├── config/
-│   └── db.config.js          # Database configuration
+│   └── db.config.js          # SQLite database configuration with auto-initialization
 ├── controllers/
 │   └── library.controller.js # API controllers
 ├── routes/
 │   └── library.routes.js     # API routes with Swagger docs
 ├── node_modules/             # Dependencies (gitignored)
-├── .env                      # Environment variables (gitignored)
 ├── .gitignore               # Git ignore rules
 ├── package.json             # Project dependencies and scripts
 ├── package-lock.json        # Locked dependency versions
@@ -238,21 +229,23 @@ curl -X GET http://localhost:3000/api/fines/1
    npx kill-port 3000
    ```
 
-2. **Database connection failed**
-   - Check if MySQL is running
-   - Verify database credentials in `.env`
-   - Ensure database exists
-
-3. **Module not found errors**
+2. **Module not found errors**
    ```bash
    # Reinstall dependencies
    rm -rf node_modules package-lock.json
    npm install
    ```
 
+3. **Database errors**
+   - The application uses an in-memory database that resets on each restart
+   - All data is automatically recreated with sample data on startup
+   - No external database configuration is needed
+
 ### Logs
 
-Check the console output for detailed error messages and server logs.
+Check the console output for detailed error messages and server logs. You should see:
+- "Connected to in-memory SQLite database"
+- "Database initialized with sample data"
 
 ## Contributing
 
