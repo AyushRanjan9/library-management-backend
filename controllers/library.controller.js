@@ -1,4 +1,3 @@
-
 // controllers/library.controller.js
 const db = require('../config/db.config');
 
@@ -72,9 +71,9 @@ exports.getTotalFines = (req, res) => {
         }
 
         if (results.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'No fines found for this user.',
+            return res.json({
+                success: true,
+                data: {total_fines:0}
             });
         }
 
@@ -274,7 +273,7 @@ exports.issueBook = (req, res) => {
         dueDate.setDate(dueDate.getDate() + 14);
 
         // Create loan record
-        db.query('INSERT INTO transactions (book_id, user_id, borrow_date, due_date) VALUES (?, ?, NOW(), ? )', [book_id, user_id, dueDate], (err, result) => {
+        db.query('INSERT INTO transactions (book_id, user_id, borrow_date, due_date) VALUES (?, ?, CURRENT_TIMESTAMP, ? )', [book_id, user_id, dueDate], (err, result) => {
             if (err) {
                 console.log(err);
                 return res.status(500).json({
