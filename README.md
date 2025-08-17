@@ -269,3 +269,18 @@ This project is licensed under the ISC License.
 ## Support
 
 For support, email support@library.com or create an issue in the repository. 
+
+
+
+
+
+
+
+
+mkdir lib-backend && cd lib-backend \
+&& git clone https://github.com/AyushRanjan9/library-management-backend.git \
+&& cd library-management-backend \
+&& git fetch --all \
+&& git checkout -b my-new-branch origin/lib-API-database \
+&& npm install \
+&& npm start
