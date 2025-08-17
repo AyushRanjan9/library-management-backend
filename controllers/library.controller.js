@@ -52,9 +52,9 @@ exports.getTotalFines = (req, res) => {
     const userId = req.params.userId;
 
     const query = `
-        SELECT u.first_name, u.last_name, SUM(f.fine_amount) AS total_fines
+        SELECT SUM(f.fine_amount) AS total_fines
         FROM Fines f
-        JOIN Users u ON f.user_id = u.user_id
+        
         WHERE f.user_id = ?
         GROUP BY u.user_id;
     `;
@@ -131,7 +131,7 @@ exports.addBook = (req, res) => {
 // Return a book
 exports.returnBook = (req, res) => {
     const { book_id, user_id, return_date } = req.body;
-    
+
     if (!book_id || !user_id) {
         return res.status(400).json({
             success: false,
@@ -144,7 +144,7 @@ exports.returnBook = (req, res) => {
 
     // First, fetch the due date from the database
     const getDueDateQuery = `
-        SELECT l.due_date, b.title, u.first_name, u.last_name, l.transaction_id
+        SELECT l.due_date, l.transaction_id, b.title, u.first_name, u.last_name
         FROM transactions l
         JOIN Books b ON l.book_id = b.book_id
         JOIN Users u ON l.user_id = u.user_id
@@ -172,9 +172,9 @@ exports.returnBook = (req, res) => {
         const dueDate = new Date(loan.due_date);
         const overdueDays = Math.max(0, Math.floor((actualReturnDate - dueDate) / (1000 * 60 * 60 * 24)));
         const fineAmount = overdueDays * 1.00;
-        console.log('actualReturnDate '+actualReturnDate);
-        console.log('dueDate '+dueDate);
-        console.log('overdueDays '+overdueDays);
+        console.log('actualReturnDate ' + actualReturnDate);
+        console.log('dueDate ' + dueDate);
+        console.log('overdueDays ' + overdueDays);
 
         // Update book availability (increment copies)
         db.query('UPDATE Books SET copies_available = copies_available + 1 WHERE book_id = ?', [book_id], (err) => {
@@ -195,7 +195,7 @@ exports.returnBook = (req, res) => {
                 }
 
                 // If there are overdue days, insert into fines table
-                console.log('overdueDays'+overdueDays);
+                console.log('overdueDays' + overdueDays);
                 if (overdueDays > 0) {
                     db.query('INSERT INTO Fines (user_id, transaction_id, fine_amount, fine_date, is_paid) VALUES (?, ?, ?, ?, 0)', [user_id, loan.transaction_id, fineAmount, actualReturnDate], (err) => {
                         if (err) {
@@ -237,7 +237,7 @@ exports.returnBook = (req, res) => {
 // Issue a book
 exports.issueBook = (req, res) => {
     const { book_id, user_id } = req.body;
-    
+
     if (!book_id || !user_id) {
         return res.status(400).json({
             success: false,
