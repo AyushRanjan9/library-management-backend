@@ -8,7 +8,7 @@ exports.getBookById = (req, res) => {
 
     // SQL query to retrieve the book details
     const query = `
-        SELECT b.title, b.isbn, b.publication_year, b.copies_available, 
+        SELECT  b.book_id, b.title, b.isbn, b.publication_year, b.copies_available, 
                a.first_name AS author_first_name, a.last_name AS author_last_name, 
                p.name AS publisher_name, c.category_name
         FROM Books b
@@ -56,7 +56,7 @@ exports.getTotalFines = (req, res) => {
         FROM Fines f
         
         WHERE f.user_id = ?
-        GROUP BY u.user_id;
+        GROUP BY f.user_id;
     `;
 
     db.query(query, [userId], (err, results) => {
@@ -144,7 +144,7 @@ exports.returnBook = (req, res) => {
 
     // First, fetch the due date from the database
     const getDueDateQuery = `
-        SELECT l.due_date, l.transaction_id, b.title, u.first_name, u.last_name
+        SELECT l.due_date, l.transaction_id
         FROM transactions l
     
         WHERE l.book_id = ? AND l.user_id = ? 
@@ -154,6 +154,7 @@ exports.returnBook = (req, res) => {
 
     db.query(getDueDateQuery, [book_id, user_id], (err, results) => {
         if (err) {
+            console.log(err);
             return res.status(500).json({
                 success: false,
                 message: 'Failed to fetch loan information.'
