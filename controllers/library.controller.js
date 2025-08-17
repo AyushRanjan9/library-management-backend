@@ -146,8 +146,7 @@ exports.returnBook = (req, res) => {
     const getDueDateQuery = `
         SELECT l.due_date, l.transaction_id, b.title, u.first_name, u.last_name
         FROM transactions l
-        JOIN Books b ON l.book_id = b.book_id
-        JOIN Users u ON l.user_id = u.user_id
+    
         WHERE l.book_id = ? AND l.user_id = ? 
         ORDER BY l.borrow_date DESC
         LIMIT 1;
