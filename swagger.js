@@ -14,8 +14,16 @@ const options = {
     },
     servers: [
       {
+        url: 'http://localhost:5000/api',
+        description: 'Development server (Port 5000)'
+      },
+      {
         url: 'http://localhost:3000/api',
-        description: 'Development server'
+        description: 'Alternative server (Port 3000)'
+      },
+      {
+        url: 'http://localhost:3001/api',
+        description: 'Alternative server (Port 3001)'
       }
     ],
     components: {

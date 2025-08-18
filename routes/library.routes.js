@@ -210,4 +210,162 @@ router.get('/books/:bookId', libraryController.getBookById);
  */
 router.get('/fines/:userId', libraryController.getTotalFines);
 
+/**
+ * @swagger
+ * /issue:
+ *   post:
+ *     summary: Issue a book
+ *     description: Issue a book to a user (creates loan record and updates availability)
+ *     tags: [Issuing]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - book_id
+ *               - user_id
+ *             properties:
+ *               book_id:
+ *                 type: integer
+ *                 description: ID of the book to issue
+ *                 example: 1
+ *               user_id:
+ *                 type: integer
+ *                 description: ID of the user to issue the book to
+ *                 example: 1
+ *     responses:
+ *       201:
+ *         description: Book issued successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Book issued successfully"
+ *                 book_title:
+ *                   type: string
+ *                   example: "The Great Gatsby"
+ *                 due_date:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-02-15T10:00:00Z"
+ *                 copies_remaining:
+ *                   type: integer
+ *                   example: 4
+ *       400:
+ *         description: Book not available or missing parameters
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Book is not available for issue."
+ *       404:
+ *         description: Book not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Book not found."
+ */
+router.post('/issue', libraryController.issueBook);
+
+/**
+ * @swagger
+ * /return:
+ *   post:
+ *     summary: Return a book
+ *     description: Return a book and calculate overdue fines (fetches due date from database)
+ *     tags: [Returns]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - book_id
+ *               - user_id
+ *             properties:
+ *               book_id:
+ *                 type: integer
+ *                 description: ID of the book being returned
+ *                 example: 1
+ *               user_id:
+ *                 type: integer
+ *                 description: ID of the user returning the book
+ *                 example: 1
+ *               return_date:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Optional return date (defaults to current date)
+ *                 example: "2024-12-25T10:00:00Z"
+ *     responses:
+ *       200:
+ *         description: Book returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Book returned successfully"
+ *                 book_title:
+ *                   type: string
+ *                   example: "The Great Gatsby"
+ *                 user_name:
+ *                   type: string
+ *                   example: "John Doe"
+ *                 due_date:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-12-31T23:59:59Z"
+ *                 return_date:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-12-25T10:00:00Z"
+ *                 overdue_days:
+ *                   type: integer
+ *                   example: 5
+ *                 fine_amount:
+ *                   type: number
+ *                   example: 5.00
+ *       404:
+ *         description: No active loan found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "No active loan found for this book and user."
+ */
+router.post('/return', libraryController.returnBook);
+
 module.exports = router;
